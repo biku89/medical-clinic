@@ -11,33 +11,21 @@ import java.util.Optional;
 public class PatientService {
     private final PatientRepository patientRepository;
 
-    List<Patient> getPatients(){
+    public List<Patient> getPatients(){
         return patientRepository.findAll();
     }
 
-    Optional<Patient> getPatientByEmail(String email){
+    public Optional<Patient> getPatientByEmail(String email){
         return patientRepository.findByEmail(email);
     }
-
-
 
     public Patient addPatient(Patient patient){
         patientRepository.addPatient(patient);
         return patient;
     }
 
-    Optional<Patient> updatePatient(String email, Patient updatedPatient) {
-        Optional<Patient> existingPateint = patientRepository.findByEmail(email);
-        existingPateint.ifPresent(patient -> {
-            patient.setFistName(updatedPatient.getFistName());
-            patient.setLastName(updatedPatient.getLastName());
-            patient.setEmail(updatedPatient.getEmail());
-            patient.setPassword(updatedPatient.getEmail());
-            patient.setIdCardNo(updatedPatient.getIdCardNo());
-            patient.setPhoneNumber(updatedPatient.getPhoneNumber());
-            patient.setBirthday(updatedPatient.getBirthday());
-        });
-        return existingPateint;
+    public Optional<Patient> updatePatient(String email, Patient updatedPatient) {
+        return patientRepository.updatePatientByEmail(email, updatedPatient);
     }
 
     public boolean deleteByEmail(String email){

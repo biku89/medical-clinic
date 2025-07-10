@@ -11,18 +11,33 @@ import java.util.Optional;
 public class PatientRepository {
     private List<Patient> patients = new ArrayList<>();
 
-    List<Patient> findAll() {
+    public List<Patient> findAll() {
         return new ArrayList<>(patients);
     }
 
-    Optional<Patient> findByEmail(String email){
+    public Optional<Patient> findByEmail(String email){
         return patients.stream()
-                .filter(patient -> patient.getEmail().equals(email)).findFirst();
+                .filter(patient -> patient.getEmail().equals(email))
+                .findFirst();
     }
 
     public Patient addPatient(Patient patient){
         patients.add(patient);
         return patient;
+    }
+
+    public Optional<Patient> updatePatientByEmail(String email, Patient updatedPatient){
+        Optional<Patient> existingPatient = findByEmail(email);
+        existingPatient.ifPresent(patient -> {
+            patient.setFistName(updatedPatient.getFistName());
+            patient.setLastName(updatedPatient.getLastName());
+            patient.setEmail(updatedPatient.getEmail());
+            patient.setPassword(updatedPatient.getEmail());
+            patient.setIdCardNo(updatedPatient.getIdCardNo());
+            patient.setPhoneNumber(updatedPatient.getPhoneNumber());
+            patient.setBirthday(updatedPatient.getBirthday());
+        });
+        return existingPatient;
     }
 
     public boolean deleteByEmail(String email){

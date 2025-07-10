@@ -21,8 +21,10 @@ public class PatientController {
     }
 
     @GetMapping("/{email}")
-    public Optional<Patient> getPatientByEmail(@PathVariable("email") String email) {
-        return patientService.getPatientByEmail(email);
+    public ResponseEntity<Patient> getPateintByEmail(@PathVariable("email") String email) {
+        return patientService.getPatientByEmail(email)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping
@@ -39,10 +41,9 @@ public class PatientController {
 
     @DeleteMapping("/{email}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deletePatient(@PathVariable String email){
+    public void deletePatient(@PathVariable String email) {
         patientService.deleteByEmail(email);
     }
-
 
 }
 
