@@ -10,7 +10,7 @@ import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/patients")
+@RequestMapping("/patients") //każdy endpoint kończy się od tej ścieżki
 public class PatientController {
 
     private final PatientService patientService;
@@ -44,6 +44,13 @@ public class PatientController {
     public void deletePatient(@PathVariable String email) {
         patientService.deleteByEmail(email);
     }
+
+    /*@PatchMapping("/{email}/password")
+    public ResponseEntity<Patient> updatePassword(@PathVariable String email, @RequestBody Patient updatePassword) {
+        return patientService.getPatientByEmail(email)
+    }*/
+
+
 
 }
 
