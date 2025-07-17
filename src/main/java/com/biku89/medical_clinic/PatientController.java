@@ -21,7 +21,7 @@ public class PatientController {
     }
 
     @GetMapping("/{email}")
-    public ResponseEntity<Patient> getPateintByEmail(@PathVariable("email") String email) {
+    public ResponseEntity<Patient> getPatientByEmail(@PathVariable("email") String email) {
         return patientService.getPatientByEmail(email)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
@@ -45,10 +45,10 @@ public class PatientController {
         patientService.deleteByEmail(email);
     }
 
-    /*@PatchMapping("/{email}/password")
-    public ResponseEntity<Patient> updatePassword(@PathVariable String email, @RequestBody Patient updatePassword) {
-        return patientService.getPatientByEmail(email)
-    }*/
+    @PatchMapping("/{email}")
+    public Patient patientUpdatePassword(@PathVariable String email, @RequestBody Patient updatePassword) {
+        return patientService.updatePassword(email, updatePassword.getPassword());
+    }
 
 
 

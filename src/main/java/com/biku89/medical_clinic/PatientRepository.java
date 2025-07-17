@@ -23,7 +23,7 @@ public class PatientRepository {
 
     public Patient addPatient(Patient patient) {
         if (findByEmail(patient.getEmail()).isPresent()){
-            throw new EmailExistingException("Pacjent już istnieje");
+            throw new EmailExistingException("Patient already exists");
         }
         patients.add(patient);
         return patient;

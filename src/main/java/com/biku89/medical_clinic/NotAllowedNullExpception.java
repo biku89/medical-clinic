@@ -1,7 +1,9 @@
 package com.biku89.medical_clinic;
 
-public class NotAllowedNullExpception extends RuntimeException {
+import org.springframework.http.HttpStatus;
+
+public class NotAllowedNullExpception extends MedicalClinicException {
     public NotAllowedNullExpception(String message) {
-        super(message);
+        super("Setting fields to null is not allowed", HttpStatus.CONFLICT);
     }
 }

@@ -10,6 +10,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class PatientService {
     private final PatientRepository patientRepository;
+    //private final PatientValidator patientValidator;
 
     public List<Patient> getPatients() {
         return patientRepository.findAll();
@@ -28,31 +29,24 @@ public class PatientService {
     }
 
     public Optional<Patient> updatePatient(String email, Patient updatedPatient) {
-        Optional<Patient> existingPatient = patientRepository.findByEmail(email);
-        if (existingPatient.filter(patient ->
-            !patient.getIdCardNo().equals(updatedPatient.getIdCardNo())).isPresent()){
-            throw new IdNumberModificationException("Nie można wprowadzic modyfikacji numeru dowodu");
-        }
-        //Dodaj walidację na sprawdzenie czy updatedPatient ma takis sam idNo
-        if (updatedPatient.getFirstName() == null ||
-        updatedPatient.getLastName() == null ||
-        updatedPatient.getBirthday() == null ||
-        updatedPatient.getPassword() == null ||
-        updatedPatient.getEmail() == null ||
-        updatedPatient.getPhoneNumber() == null) {
-            throw new NotAllowedNullExpception("Nie można ustawić wartości jako null");
-        }
+        Patient existingPatient = patientRepository.findByEmail(email)
+                .orElseThrow(() -> new PatientNotFoundException("Patient not found"));
+
+        PatientValidator.modifyingIdCardNoNotAllowed(existingPatient, updatedPatient);
+        PatientValidator.notAllowedChangeToNull(updatedPatient);
 
         Optional<Patient> patientWithSameEmail = patientRepository.findByEmail(updatedPatient.getEmail());
-        if (patientWithSameEmail.isPresent() && !patientWithSameEmail.get().getEmail().equals(email)) {
-            throw new EmailExistingException("Istnieje już pacjent z takim adresem email");
-        }
+        PatientValidator.patientWithEmailIsAlreadyExist(patientWithSameEmail,updatedPatient,email);
+
         return patientRepository.updatePatientByEmail(email, updatedPatient);
     }
 
-    public Patient updatePassword(Patient patient, String updatePassoword) {
-        patientRepository.updatePassword(patient, updatePassoword);
-        return patient;
+    public Patient updatePassword(String email, String updatePassword) {
+        Patient patient = patientRepository.findByEmail(email)
+                .orElseThrow(() -> new PatientNotFoundException("Patient not found."));
+
+        return patientRepository.updatePassword(patient, updatePassword)
+                .orElseThrow(() -> new RuntimeException("Failed to update password."));
     }
 
     public boolean deleteByEmail(String email) {

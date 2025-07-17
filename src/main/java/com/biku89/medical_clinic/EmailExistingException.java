@@ -1,7 +1,9 @@
 package com.biku89.medical_clinic;
 
-public class EmailExistingException extends RuntimeException {
+import org.springframework.http.HttpStatus;
+
+public class EmailExistingException extends MedicalClinicException {
     public EmailExistingException(String message) {
-        super(message);
+        super("Email already exists", HttpStatus.CONFLICT);
     }
 }
