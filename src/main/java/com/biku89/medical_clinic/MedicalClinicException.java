@@ -5,12 +5,14 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.http.HttpStatus;
 
-@AllArgsConstructor
-@Getter
-@Setter
-public class MedicalClinicException extends RuntimeException{
-    private String message;
-    private HttpStatus httpStatus;
 
+@Getter
+public class MedicalClinicException extends RuntimeException {
+    private final HttpStatus httpStatus;
+
+    public MedicalClinicException(String message, HttpStatus httpStatus) {
+        super(message);
+        this.httpStatus = httpStatus;
     }
+}
 
