@@ -5,6 +5,5 @@ import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
-
-public record PatientDTO(String firstName, String lastName, String email, String phoneNumber, String birthday) {
+public record PatientDTO(Long id, String firstName, String lastName, String email, String phoneNumber, String birthday) {
 }

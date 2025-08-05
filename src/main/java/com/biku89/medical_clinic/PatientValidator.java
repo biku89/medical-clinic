@@ -26,9 +26,8 @@ public final class PatientValidator {
         }
     }
 
-    public static void patientWithEmailIsAlreadyExist(Optional<Patient> patientWithSameEmail, Patient updatedPatient, String email) {
-        //popraw Optional w metodzie, dodaj PatientRepository jako argument, bez emaila spróbuj
-        if (patientWithSameEmail.isPresent() && !patientWithSameEmail.get().getEmail().equals(email)) {
+    public static void patientWithEmailIsAlreadyExist(PatientRepository patientWithSameEmail, Patient updatedPatient, String email) {
+        if (patientWithSameEmail.findByEmail(updatedPatient.getEmail()).isPresent() && !email.equals(updatedPatient.getEmail())) {
             throw new EmailExistingException("patient with this email email already exists");
         }
     }

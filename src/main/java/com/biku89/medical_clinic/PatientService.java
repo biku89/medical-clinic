@@ -36,15 +36,9 @@ public class PatientService {
 
         PatientValidator.modifyingIdCardNoNotAllowed(existingPatient, updatedPatient);
         PatientValidator.notAllowedChangeToNull(updatedPatient);
+        PatientValidator.patientWithEmailIsAlreadyExist(patientRepository, updatedPatient, email);
 
-        Optional<Patient> patientWithSameEmail = patientRepository.findByEmail(updatedPatient.getEmail());
-        PatientValidator.patientWithEmailIsAlreadyExist(patientWithSameEmail, updatedPatient, email);
-
-        existingPatient.setFirstName(updatedPatientDTO.getFirstName());
-        existingPatient.setLastName(updatedPatientDTO.getLastName());
-        existingPatient.setEmail(updatedPatientDTO.getEmail());
-        existingPatient.setPhoneNumber(updatedPatientDTO.getPhoneNumber());
-        existingPatient.setBirthday(updatedPatientDTO.getBirthday());
+        existingPatient.updatePatient(updatedPatientDTO);
 
         return patientMapper.toDTO(patientRepository.save(existingPatient));
     }
@@ -58,9 +52,14 @@ public class PatientService {
     }
 
     public boolean deleteByEmail(String email) {
-        Patient patient = patientRepository.findByEmail(email).orElseThrow(() -> new PatientNotFoundException("Patient not found"));
+        Patient patient = patientRepository.findByEmail(email)
+                .orElseThrow(() -> new PatientNotFoundException("Patient not found"));
         patientRepository.delete(patient);
         return true;
+    }
+
+    public void deletePatients(PatientsDeleteCommand patientsDeleteCommand){
+        patientRepository.deleteAllById(patientsDeleteCommand.getIds());
     }
 }
 

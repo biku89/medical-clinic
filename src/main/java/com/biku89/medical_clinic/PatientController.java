@@ -95,7 +95,9 @@ public class PatientController {
         return patientService.updatePassword(email, updatePassword.getPassword());
     }
 
-
-
+    @DeleteMapping
+    public void deletePatients(@RequestBody PatientsDeleteCommand deletePatients){
+        patientService.deletePatients(deletePatients);
+    }
 }
 
