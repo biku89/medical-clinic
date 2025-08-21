@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 import java.util.List;
+import java.util.Objects;
+
 @Entity
 @Data
 public class Institution {
@@ -18,4 +20,31 @@ public class Institution {
     @ManyToMany(mappedBy = "institutions")
     private List<Doctor> doctors;
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Institution))
+            return false;
+        Institution that = (Institution) o;
+        return id != null
+                && id.equals(that.getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return "Institution{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", city='" + city + '\'' +
+                ", postalCode='" + postalCode + '\'' +
+                ", street='" + street + '\'' +
+                ", buildingNumber='" + buildingNumber + '\'' +
+                ", doctors=" + doctors.stream().map(Doctor::getId) +
+                '}';
+    }
 }

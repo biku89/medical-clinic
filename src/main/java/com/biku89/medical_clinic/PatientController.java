@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -24,8 +25,8 @@ public class PatientController {
             content = @Content(mediaType = "application/json",
                     schema = @Schema(implementation = ErrorMessage.class)))
     @GetMapping
-    public List<PatientDTO> getPatients() {
-        return patientService.getPatients();
+    public PageDTO<PatientDTO> getPatients(Pageable pageable) {
+        return patientService.getPatients(pageable);
     }
 
     @Operation(summary = "Get patient by email")
@@ -36,10 +37,8 @@ public class PatientController {
             content = @Content(mediaType = "application/json",
                     schema = @Schema(implementation = ErrorMessage.class)))
     @GetMapping("/{email}")
-    public ResponseEntity<PatientDTO> getPatientByEmail(@PathVariable("email") String email) {
-        return patientService.getPatientByEmail(email)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    public PatientDTO getPatientByEmail(@PathVariable("email") String email) {
+        return patientService.getPatientByEmail(email);
     }
 
     @Operation(summary = "Add new patient")
@@ -96,7 +95,7 @@ public class PatientController {
     }
 
     @DeleteMapping
-    public void deletePatients(@RequestBody PatientsDeleteCommand deletePatients){
+    public void deletePatients(@RequestBody PatientsDeleteCommand deletePatients) {
         patientService.deletePatients(deletePatients);
     }
 }

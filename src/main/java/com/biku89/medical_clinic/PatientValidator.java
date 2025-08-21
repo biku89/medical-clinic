@@ -2,9 +2,6 @@ package com.biku89.medical_clinic;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import org.springframework.stereotype.Component;
-
-import java.util.Optional;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE) //lombok tworzy konstruktor prywatny, final przy klasie oznacza że nie pozwalam na dziedziczenie
 public final class PatientValidator {
@@ -22,7 +19,7 @@ public final class PatientValidator {
                 updatedPatient.getPassword() == null ||
                 updatedPatient.getEmail() == null ||
                 updatedPatient.getPhoneNumber() == null) {
-            throw new NotAllowedNullExpception("Setting required fields to null is not allowed");
+            throw new NotAllowedNullException("Setting required fields to null is not allowed");
         }
     }
 
@@ -30,5 +27,11 @@ public final class PatientValidator {
         if (patientWithSameEmail.findByEmail(updatedPatient.getEmail()).isPresent() && !email.equals(updatedPatient.getEmail())) {
             throw new EmailExistingException("patient with this email email already exists");
         }
+    }
+
+    public static void useValidatorMethods(Patient existingPatient,Patient updatedPatient, String email, PatientRepository patientWithSameEmail ){
+        modifyingIdCardNoNotAllowed(existingPatient, updatedPatient);
+        notAllowedChangeToNull(updatedPatient);
+        patientWithEmailIsAlreadyExist(patientWithSameEmail,updatedPatient,email);
     }
 }

@@ -2,8 +2,8 @@ package com.biku89.medical_clinic;
 
 import org.springframework.http.HttpStatus;
 
-public class IstitutionExistingException extends MedicalClinicException {
-    public IstitutionExistingException(String message) {
+public class InstitutionExistingException extends MedicalClinicException {
+    public InstitutionExistingException(String message) {
         super(message, HttpStatus.CONFLICT);
     }
 }

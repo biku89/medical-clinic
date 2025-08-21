@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.Objects;
+
 @Getter
 @AllArgsConstructor
 @Setter
@@ -32,5 +34,20 @@ public class Patient {
         this.birthday = updatedPatient.getBirthday();
 
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Patient))
+            return false;
+        Patient patient = (Patient) o;
+        return id != null && id.equals(patient.getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
+    }
+
 
 }

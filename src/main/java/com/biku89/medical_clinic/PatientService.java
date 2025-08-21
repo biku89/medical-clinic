@@ -1,6 +1,8 @@
 package com.biku89.medical_clinic;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -12,12 +14,13 @@ public class PatientService {
     private final PatientRepository patientRepository;
     private final PatientMapper patientMapper;
 
-    public List<PatientDTO> getPatients() {
-        return patientRepository.findAll().stream().map(patientMapper::toDTO).toList();
+    public PageDTO<PatientDTO> getPatients(Pageable pageable) {
+        return PageDTO.from(patientRepository.findAll(pageable), patientMapper::toDTO);
     }
 
-    public Optional<PatientDTO> getPatientByEmail(String email) {
-        return patientRepository.findByEmail(email).map(patientMapper::toDTO);
+    public PatientDTO getPatientByEmail(String email) {
+        return patientRepository.findByEmail(email).map(patientMapper::toDTO)
+                .orElseThrow(() -> new PatientNotFoundException("Patient Not found"));
     }
 
     public PatientDTO addPatient(PatientDTO patientDTO) {
@@ -34,9 +37,7 @@ public class PatientService {
         Patient existingPatient = patientRepository.findByEmail(email)
                 .orElseThrow(() -> new PatientNotFoundException("Patient not found"));
 
-        PatientValidator.modifyingIdCardNoNotAllowed(existingPatient, updatedPatient);
-        PatientValidator.notAllowedChangeToNull(updatedPatient);
-        PatientValidator.patientWithEmailIsAlreadyExist(patientRepository, updatedPatient, email);
+        PatientValidator.useValidatorMethods(existingPatient,updatedPatient,email,patientRepository);
 
         existingPatient.updatePatient(updatedPatientDTO);
 
