@@ -11,7 +11,8 @@ public class Visit {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private LocalDateTime dateTime;
+    private LocalDateTime startDateTime;
+    private LocalDateTime endDateTime;
 
     @ManyToOne //Czyli wiele wizyt do jednego doktora
     @JoinColumn(name = "doctor_id")

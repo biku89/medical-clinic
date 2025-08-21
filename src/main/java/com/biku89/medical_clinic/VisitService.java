@@ -14,58 +14,49 @@ public class VisitService {
     private final PatientRepository patientRepository;
     private final VisitMapper visitMapper;
 
-    public VisitDTO createVisit(Long doctorId, LocalDateTime dateTime){ //STWÓRZ DTO
+    public VisitDTO createVisit(Long doctorId, CreateVisitCommand createVisitCommand) { //STWÓRZ DTO
         Doctor doctor = doctorRepository.findById(doctorId)
                 .orElseThrow(() -> new DoctorNotFoundException("Doctor not found"));
 
-        if (dateTime.isBefore(LocalDateTime.now())) {
-            throw new IncorrectDataException("The visit cannot be in the past");
-        }
+        LocalDateTime startVisit = createVisitCommand.getStartDateTime();
+        LocalDateTime endVisit = createVisitCommand.getEndDateTime();
 
-        if (visitRepository.existsVisitByDoctorAndDateTime(doctor, dateTime)){
-            throw new VisitExistingException("This doctor already has a visit at the given time");
-        }
+        VisitValidator.visitNotInPast(startVisit);
+        VisitValidator.visitStartBeforeEnd(startVisit,endVisit);
+        VisitValidator.visitFullQuarterHour(startVisit);
 
-        int minute = dateTime.getMinute();
-        if (minute != 0 &&minute != 15 && minute != 30 && minute != 45){
-            throw new IllegalArgumentException("The deadline must start on the full quarter of an hour");
-        }
+        List<Visit> conflictVisits = visitRepository.findByDoctorIdAndEndDateTimeAfterAndStartDateTimeBefore(doctorId, startVisit, endVisit);
+        VisitValidator.visitConflicts(conflictVisits);
 
         Visit visit = new Visit();
         visit.setDoctor(doctor);
-        visit.setDateTime(dateTime);
+        visit.setStartDateTime(startVisit);
+        visit.setEndDateTime(endVisit);
 
         Visit savedVisit = visitRepository.save(visit);
         return visitMapper.toDTO(savedVisit);
 
     }
 
-    public VisitDTO bookVisit(Long visitId, Long patientId){
+    public VisitDTO bookVisit(Long visitId, Long patientId) {
         Visit visit = visitRepository.findById(visitId)
                 .orElseThrow(() -> new IllegalArgumentException("Visit not found"));
 
-        if (visit.getDateTime().isBefore(LocalDateTime.now())){
-            throw new IncorrectDataException("The visit cannot be in the past");
-        }
-
+        VisitValidator.visitNotInPast(visit.getStartDateTime());
+        VisitValidator.visitAlreadyBooked(visit);
 
         Patient patient = patientRepository.findById(patientId)
                 .orElseThrow(() -> new PatientNotFoundException("Patient not found"));
-
-        if (visit.getPatient() != null){
-            throw new IllegalArgumentException("The visit is already booked");//zrób własny warunek
-        }
 
         visit.setPatient(patient);
         Visit savedVisit = visitRepository.save(visit);
         return visitMapper.toDTO(savedVisit);
     }
 
-    public List<VisitDTO> getVisitsForPatient(Long patientId){
+    public List<VisitDTO> getVisitsForPatient(Long patientId) {
         Patient patient = patientRepository.findById(patientId)
                 .orElseThrow(() -> new PatientNotFoundException("Patient not found"));
-        return visitRepository.findByPatient(patient)
-                .stream()
+        return visitRepository.findByPatient(patient).stream()
                 .map(visitMapper::toDTO)
                 .toList();
     }

@@ -13,8 +13,8 @@ public class VisitController {
     private final VisitService visitService;
 
     @PostMapping("/doctor/{doctorId}")
-    public VisitDTO createVisit(@PathVariable Long doctorId, @RequestBody VisitCreateRequest request){
-        return visitService.createVisit(doctorId, request.getDateTime());
+    public VisitDTO createVisit(@PathVariable Long doctorId, @RequestBody CreateVisitCommand request){
+        return visitService.createVisit(doctorId, request);
     }
 
     @PostMapping("/{visitId}/book/{patientId}")
