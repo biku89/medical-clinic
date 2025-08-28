@@ -14,11 +14,11 @@ public class Visit {
     private LocalDateTime startDateTime;
     private LocalDateTime endDateTime;
 
-    @ManyToOne //Czyli wiele wizyt do jednego doktora
+    @ManyToOne(fetch = FetchType.LAZY) //Czyli wiele wizyt do jednego doktora
     @JoinColumn(name = "doctor_id")
     private Doctor doctor;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "patient_id")
     private Patient patient;
 }

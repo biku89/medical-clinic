@@ -17,7 +17,8 @@ public class Institution {
     private String postalCode;
     private String street;
     private String buildingNumber;
-    @ManyToMany(mappedBy = "institutions")
+
+    @ManyToMany(mappedBy = "institutions", fetch = FetchType.LAZY)
     private List<Doctor> doctors;
 
     @Override

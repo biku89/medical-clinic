@@ -17,7 +17,7 @@ public class Doctor {
     private String lastName;
     private String email;
     private String password;
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "doctor_institution",
             joinColumns = @JoinColumn(name = "doctor_id"),
