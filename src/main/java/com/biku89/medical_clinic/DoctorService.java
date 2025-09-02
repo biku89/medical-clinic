@@ -40,7 +40,7 @@ public class DoctorService {
     public DoctorDTO updateDoctor(String email, DoctorUpdateCommand doctorUpdateCommand){
         Doctor doctorUpdate = doctorMapper.toEntity(doctorUpdateCommand);
         Doctor existingDoctor = doctorRepository.findByEmail(email)
-                .orElseThrow(() -> new EmailExistingException("Doctor already exists"));
+                .orElseThrow(() -> new DoctorNotFoundException("Doctor not found"));
 
         existingDoctor.updateDoctor(doctorUpdateCommand);
         return doctorMapper.toDTO(doctorRepository.save(existingDoctor));
@@ -48,7 +48,7 @@ public class DoctorService {
 
     public void deleteDoctorByEmail(String email){
         Doctor doctor = doctorRepository.findByEmail(email)
-                .orElseThrow(() -> new EmailExistingException("Doctor already exists"));
+                .orElseThrow(() -> new DoctorNotFoundException("Doctor not found"));
         doctorRepository.delete(doctor);
     }
 
@@ -56,11 +56,9 @@ public class DoctorService {
         Doctor doctor = doctorRepository.findByEmail(email)
                 .orElseThrow(() -> new DoctorNotFoundException("Doctor not found"));
         Institution institution = institutionRepository.findByName(name)
-                .orElseThrow(() -> new InstitutionNotFoundException("Institution not fund"));
+                .orElseThrow(() -> new InstitutionNotFoundException("Institution not found"));
         doctor.getInstitutions().add(institution);
         doctorRepository.save(doctor);
         return institution;
     }
-
-
 }

@@ -11,12 +11,13 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 public class PatientServiceTest {
     PatientService patientService;
@@ -97,13 +98,7 @@ public class PatientServiceTest {
         //given -> przygotowanie danych
         String email = "jankowalski@gmail.com";
         Patient existingPatient = new Patient(1L, "jan","kowalski", email, "hasło","2","0","01-10-100");
-        PatientUpdateCommand patientUpdateCommand = new PatientUpdateCommand();
-        patientUpdateCommand.setFirstName("adam");
-        patientUpdateCommand.setLastName("nowak");
-        patientUpdateCommand.setPhoneNumber("0");
-        patientUpdateCommand.setPassword("s");
-        patientUpdateCommand.setBirthday("11");
-        patientUpdateCommand.setEmail("adamnowak@gmail.com");
+        PatientUpdateCommand patientUpdateCommand = new PatientUpdateCommand("adam","nowak","adamnowak@gmail.com","s","2","0","11");
         when(patientRepository.findByEmail(email)).thenReturn(Optional.of(existingPatient));
         when(patientRepository.save(existingPatient)).thenReturn(existingPatient);
 
@@ -123,7 +118,7 @@ public class PatientServiceTest {
         String email = "jankowlaski@gmail.com";
         Patient patient = new Patient(1L, "jan","kowalski", email, "hasło","2","0","01-10-100");
         String updatePassword = "noweHasło";
-        patient.setPassword(updatePassword);
+
         when(patientRepository.findByEmail(email)).thenReturn(Optional.of(patient));
         when(patientRepository.save(patient)).thenReturn(patient);
         //when
@@ -145,6 +140,76 @@ public class PatientServiceTest {
         when(patientRepository.findByEmail(email)).thenReturn(Optional.of(patient));
         //when
         patientService.deleteByEmail(email);
-        //then ??
+        //then
+        verify(patientRepository, times(1)).delete(patient);
+    }
+    @Test
+    void getPatientByEmail_PatientNotFound_returnedException(){
+        //given
+        Patient patient = new Patient(1L, "Jan", "Kowalski", "jankowalski@gmail.com", "hasło", "10", "000", "1900-0101");
+        when(patientRepository.findByEmail("jankowalski@gmail.com")).thenReturn(Optional.empty());
+        //When and then
+        PatientNotFoundException exception = Assertions.assertThrows(PatientNotFoundException.class,() -> patientService.getPatientByEmail("jankowalski@gmail.com"));
+        Assertions.assertAll(
+                () -> Assertions.assertEquals("Patient Not found", exception.getMessage()),
+                () -> Assertions.assertEquals(HttpStatus.NOT_FOUND, exception.getHttpStatus())
+        );
+    }
+
+    @Test
+    void addPatient_PatientsExists_returnedException(){
+        //given
+        Patient patient = new Patient(1L, "Jan", "Kowalski", "jankowalski@gmail.com", "hasło", "10", "000", "1900-0101");
+        PatientDTO patientDTO = new PatientDTO(1L, "Jan", "Kowalski", "jankowalski@gmail.com", "000", "01-01-1000");
+        when(patientRepository.findByEmail("jankowalski@gmail.com")).thenReturn(Optional.of(patient));
+        //when and then
+        EmailExistingException exception = Assertions.assertThrows(EmailExistingException.class, () -> patientService.addPatient(patientDTO));
+        Assertions.assertAll(
+                () -> Assertions.assertEquals("Patient with this email already exists", exception.getMessage()),
+                () -> Assertions.assertEquals(HttpStatus.CONFLICT, exception.getHttpStatus())
+        );
+    }
+
+    @Test
+    void updatePatient_PatientNotFound_returnedException(){
+        //given
+        String email = "jankowalski@gmail.com";
+        PatientUpdateCommand patientUpdateCommand = new PatientUpdateCommand("adam","nowak","adamnowak@gmail.com","s","2","0","11");
+        when(patientRepository.findByEmail(email)).thenReturn(Optional.empty());
+        //when and then
+        PatientNotFoundException exception = Assertions.assertThrows(PatientNotFoundException.class, () -> patientService.updatePatient(email,patientUpdateCommand));
+        Assertions.assertAll(
+                () -> Assertions.assertEquals("Patient not found", exception.getMessage()),
+                () -> Assertions.assertEquals(HttpStatus.NOT_FOUND, exception.getHttpStatus())
+        );
+    }
+
+    @Test
+    void deletePatients_PatientExists_PatientsDeleted(){
+        //given
+        List<Long> idsToDelete = List.of(1L, 2L);
+        PatientsDeleteCommand patientsDeleteCommand = new PatientsDeleteCommand();
+        patientsDeleteCommand.setIds(idsToDelete);
+
+        //when
+        patientService.deletePatients(patientsDeleteCommand);
+
+        //then
+        verify(patientRepository, times(1)).deleteAllById(idsToDelete);
+    }
+
+    @Test
+    void deleteByEmail_PatientNotExists_ReturnedException(){
+        //given
+        String email = "jankowalski@gmail.com";
+        when(patientRepository.findByEmail(email)).thenReturn(Optional.empty());
+
+        //when + then
+        PatientNotFoundException exception = Assertions.assertThrows(PatientNotFoundException.class, () -> patientService.deleteByEmail(email));
+
+        Assertions.assertAll(
+                () -> Assertions.assertEquals("Patient not found", exception.getMessage()),
+                () -> Assertions.assertEquals(HttpStatus.NOT_FOUND, exception.getHttpStatus())
+        );
     }
 }

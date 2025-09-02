@@ -19,7 +19,8 @@ public class PatientService {
     }
 
     public PatientDTO getPatientByEmail(String email) {
-        return patientRepository.findByEmail(email).map(patientMapper::toDTO)
+        return patientRepository.findByEmail(email)
+                .map(patientMapper::toDTO)
                 .orElseThrow(() -> new PatientNotFoundException("Patient Not found"));
     }
 

@@ -4,6 +4,6 @@ import org.springframework.http.HttpStatus;
 
 public class EmailExistingException extends MedicalClinicException {
     public EmailExistingException(String message) {
-        super("Email already exists", HttpStatus.CONFLICT);
+        super(message, HttpStatus.CONFLICT);
     }
 }

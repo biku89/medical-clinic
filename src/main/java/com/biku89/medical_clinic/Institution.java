@@ -1,6 +1,7 @@
 package com.biku89.medical_clinic;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import java.util.List;
@@ -8,6 +9,7 @@ import java.util.Objects;
 
 @Entity
 @Data
+@AllArgsConstructor
 public class Institution {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -73,10 +73,11 @@ public class DoctorController {
     @ApiResponse(responseCode = "404", description = "Doctor not found",
             content = @Content(mediaType = "application/json",
                     schema = @Schema(implementation = ErrorMessage.class)))
-    @DeleteMapping("/email")
+    @DeleteMapping("/{email}")
     public void deleteDoctorByEmail(@PathVariable("email")String email){
         doctorService.deleteDoctorByEmail(email);
     }
+
     @PatchMapping("/{email}")
     public InstitutionDTO assignInstitutionToDoctor(@PathVariable String email, @RequestBody InstitutionAssignRequest InstitutionAssign){
         return  institutionMapper.toDTO(doctorService.assignClinic(email, InstitutionAssign.getName()));

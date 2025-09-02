@@ -1,5 +1,6 @@
 package com.biku89.medical_clinic;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import java.util.ArrayList;
