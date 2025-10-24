@@ -1,6 +1,7 @@
 package com.biku89.medical_clinic;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import java.util.List;
@@ -8,6 +9,7 @@ import java.util.Objects;
 
 @Entity
 @Data
+@AllArgsConstructor
 public class Institution {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -17,7 +19,8 @@ public class Institution {
     private String postalCode;
     private String street;
     private String buildingNumber;
-    @ManyToMany(mappedBy = "institutions")
+
+    @ManyToMany(mappedBy = "institutions", fetch = FetchType.LAZY)
     private List<Doctor> doctors;
 
     @Override

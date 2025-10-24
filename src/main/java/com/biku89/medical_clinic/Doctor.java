@@ -1,6 +1,7 @@
 package com.biku89.medical_clinic;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import java.time.LocalDateTime;
@@ -9,6 +10,7 @@ import java.util.Objects;
 
 @Data
 @Entity
+@AllArgsConstructor
 public class Doctor {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -17,7 +19,7 @@ public class Doctor {
     private String lastName;
     private String email;
     private String password;
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "doctor_institution",
             joinColumns = @JoinColumn(name = "doctor_id"),

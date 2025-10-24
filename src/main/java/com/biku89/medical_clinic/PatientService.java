@@ -19,7 +19,8 @@ public class PatientService {
     }
 
     public PatientDTO getPatientByEmail(String email) {
-        return patientRepository.findByEmail(email).map(patientMapper::toDTO)
+        return patientRepository.findByEmail(email)
+                .map(patientMapper::toDTO)
                 .orElseThrow(() -> new PatientNotFoundException("Patient Not found"));
     }
 
@@ -37,7 +38,7 @@ public class PatientService {
         Patient existingPatient = patientRepository.findByEmail(email)
                 .orElseThrow(() -> new PatientNotFoundException("Patient not found"));
 
-        PatientValidator.useValidatorMethods(existingPatient,updatedPatient,email,patientRepository);
+        PatientValidator.useValidatorMethods(existingPatient, updatedPatient, email, patientRepository);
 
         existingPatient.updatePatient(updatedPatientDTO);
 
@@ -52,14 +53,13 @@ public class PatientService {
         return patientMapper.toDTO(patientRepository.save(patient));
     }
 
-    public boolean deleteByEmail(String email) {
+    public void deleteByEmail(String email) {
         Patient patient = patientRepository.findByEmail(email)
                 .orElseThrow(() -> new PatientNotFoundException("Patient not found"));
         patientRepository.delete(patient);
-        return true;
     }
 
-    public void deletePatients(PatientsDeleteCommand patientsDeleteCommand){
+    public void deletePatients(PatientsDeleteCommand patientsDeleteCommand) {
         patientRepository.deleteAllById(patientsDeleteCommand.getIds());
     }
 }

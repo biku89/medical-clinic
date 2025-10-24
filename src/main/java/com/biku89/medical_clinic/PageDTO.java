@@ -26,6 +26,6 @@ public class PageDTO<T> {
 
     public static <A, B> PageDTO<B> from(Page<A> page, Function<A, B> map){
         List<B> content = page.getContent().stream().map(map).toList();
-        return new PageDTO<>(content, page.getTotalPages(), page.getTotalPages());
+        return new PageDTO<>(content, page.getTotalPages(), page.getTotalElements());
     }
 }
