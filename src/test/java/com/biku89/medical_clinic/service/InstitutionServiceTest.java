@@ -6,6 +6,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;
 import org.mockito.Mockito;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -18,6 +19,7 @@ import java.util.Optional;
 
 import static org.mockito.Mockito.*;
 
+@SpringBootTest
 public class InstitutionServiceTest {
     InstitutionService institutionService;
     InstitutionMapper institutionMapper;
@@ -107,6 +109,7 @@ public class InstitutionServiceTest {
                 () -> Assertions.assertEquals(HttpStatus.CONFLICT, exception.getHttpStatus())
         );
     }
+
     @Test
     void deleteInstitution_InstitutionExists_returnedDeleteInstitution(){
         String name = "szpital";

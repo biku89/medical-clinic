@@ -54,7 +54,6 @@ public class PatientControllerTest {
                         jsonPath("$.content[0].lastName").value("Kowalski"),
                         jsonPath("$.content[0].email").value("jankowalski@gmail.com"),
                         jsonPath("$.totalPages").value(1));
-        //when + then
     }
 
     @Test
@@ -119,39 +118,38 @@ public class PatientControllerTest {
     }
 
     @Test
-    void patientUpdatePassword_PatientExists_returnedUpdatePassword() throws Exception{
+    void patientUpdatePassword_PatientExists_returnedUpdatePassword() throws Exception {
         String email = "jankowalski@gmail.com";
         String updatePassowrd = "hasłopoupdate";
-        PatientDTO updatedPatient = new PatientDTO(1L, "Jan", "Kowalski",email, "00","1990-01-01");
+        PatientDTO updatedPatient = new PatientDTO(1L, "Jan", "Kowalski", email, "00", "1990-01-01");
 
-        when(patientService.updatePassword(email,updatePassowrd)).thenReturn(updatedPatient);
+        when(patientService.updatePassword(email, updatePassowrd)).thenReturn(updatedPatient);
 
-        Patient patientWithNewPasowrd = new Patient();
-        patientWithNewPasowrd.setPassword(updatePassowrd);
+        Patient patientWithNewPassword = new Patient();
+        patientWithNewPassword.setPassword(updatePassowrd);
 
         //when + then
         mockMvc.perform(MockMvcRequestBuilders.patch("/patients/jankowalski@gmail.com")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(patientWithNewPasowrd)))
+                        .content(objectMapper.writeValueAsString(patientWithNewPassword)))
                 .andExpectAll(
                         status().isOk(),
                         jsonPath("$.firstName").value("Jan"),
                         jsonPath("$.lastName").value("Kowalski")
                 );
     }
+
     @Test
-    void deletePatients_PatientsExists_DeletedPatients() throws Exception{
+    void deletePatients_PatientsExists_DeletedPatients() throws Exception {
         PatientsDeleteCommand patientsDeleteCommand = new PatientsDeleteCommand();
-        patientsDeleteCommand.setIds(List.of(1L,2L));
+        patientsDeleteCommand.setIds(List.of(1L, 2L));
 
         mockMvc.perform(MockMvcRequestBuilders.delete("/patients")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(patientsDeleteCommand)))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(patientsDeleteCommand)))
                 .andExpectAll(
                         status().is(200)
                 );
         verify(patientService, times(1)).deletePatients(patientsDeleteCommand);
-
     }
-
 }

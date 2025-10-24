@@ -40,7 +40,7 @@ public class VisitService {
 
     public VisitDTO bookVisit(Long visitId, Long patientId) {
         Visit visit = visitRepository.findById(visitId)
-                .orElseThrow(() -> new IllegalArgumentException("Visit not found"));
+                .orElseThrow(() -> new NotFoundException("Visit not found"));
 
         VisitValidator.visitNotInPast(visit.getStartDateTime());
         VisitValidator.visitAlreadyBooked(visit);

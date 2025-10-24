@@ -3,6 +3,7 @@ package com.biku89.medical_clinic;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -11,6 +12,8 @@ import java.util.Objects;
 @Data
 @Entity
 @AllArgsConstructor
+@NoArgsConstructor
+@Table(name = "DOCTORS")
 public class Doctor {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

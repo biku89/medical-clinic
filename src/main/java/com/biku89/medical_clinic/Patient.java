@@ -13,6 +13,7 @@ import java.util.Objects;
 @Setter
 @NoArgsConstructor
 @Entity
+@Table(name = "PATIENTS")
 public class Patient {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
