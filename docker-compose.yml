@@ -1,0 +1,36 @@
+
+services:
+  app:
+    image: medical-clinic:latest
+    build:
+      context: .
+    container_name: app-medical
+    depends_on:
+      - db
+    environment:
+      - POSTGRES_USER=nick
+      - POSTGRES_PASSWORD=password
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/dbname
+      - SPRING_DATASOURCE_USERNAME=nick
+      - SPRING_DATASOURCE_PASSWORD=password
+    ports:
+      - "8080:8080"
+
+  db:
+    image: postgres
+    container_name: db-medical
+    environment:
+      - POSTGRES_USER=nick
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=dbname
+    ports:
+      - "5432:5432"
+
+  pgAdmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin4_container_new
+    ports:
+      - "8081:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: medical@gmail.com
+      PGADMIN_DEFAULT_PASSWORD: password

@@ -1,5 +1,6 @@
 package com.biku89.medical_clinic;
 
+import lombok.Data;
 import org.springframework.data.domain.Example;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

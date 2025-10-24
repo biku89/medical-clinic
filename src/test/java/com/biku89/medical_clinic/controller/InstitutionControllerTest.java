@@ -65,6 +65,7 @@ public class InstitutionControllerTest {
                         jsonPath("$.name").value("Szpital")
                 );
     }
+
     @Test
     void addInstitution_InstitutionExists_saveInstitution() throws Exception{
         InstitutionDTO institutionDTO = new InstitutionDTO(1L, "Szpital", "łódź", "0", "1", "2", new ArrayList<>());
@@ -80,14 +81,14 @@ public class InstitutionControllerTest {
                         jsonPath("$.city").value("łódź")
                 );
     }
+
     @Test
     void deleteInstitutionByName_InstitutionExists_DeletedInstitution()throws Exception{
         String name = "szpital";
 
-        mockMvc.perform(MockMvcRequestBuilders.delete("/institutions/szpital")
-                .contentType(MediaType.APPLICATION_JSON))
+        mockMvc.perform(MockMvcRequestBuilders.delete("/institutions/szpital"))
                 .andExpectAll(
-                        status().is(200)
+                        status().isOk()
                 );
         verify(institutionService, times(1)).deleteInstitution(name);
     }
