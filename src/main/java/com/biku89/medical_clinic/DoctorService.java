@@ -61,4 +61,9 @@ public class DoctorService {
         doctorRepository.save(doctor);
         return institution;
     }
+
+    public List<DoctorDTO> getDoctorsBySpecialization(DoctorSpecialization specialization){
+        return doctorRepository.findByDoctorSpecialization(specialization)
+                .stream().map(doctorMapper::toDTO).toList();
+    }
 }

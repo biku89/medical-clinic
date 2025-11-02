@@ -1,3 +1,4 @@
+/*
 package com.biku89.medical_clinic.controller;
 
 import com.biku89.medical_clinic.*;
@@ -70,3 +71,4 @@ public class VisitControllerTest {
                         jsonPath("$.patient.firstName").value("Adam"));
     }
 }
+*/

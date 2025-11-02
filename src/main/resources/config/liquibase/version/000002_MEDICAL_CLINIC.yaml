@@ -28,5 +28,28 @@ databaseChangeLog:
                   name: password
                   type: varchar(255)
 
+  - changeSet:
+      id: 2
+      author: ja
+      changes:
+        - addColumn:
+            tableName: DOCTORS
+            columns:
+              - column:
+                  name: specialization
+                  type: varchar(255)
+                  constraints:
+                    nullable: true
 
-
+  - changeSet:
+      id: 3
+      author: ja
+      changes:
+        - addColumn:
+            tableName: DOCTORS
+            columns:
+              - column:
+                  name: doctor_specialization
+                  type: varchar(255)
+                  constraints:
+                    nullable: true

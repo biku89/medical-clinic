@@ -22,6 +22,9 @@ public class Doctor {
     private String lastName;
     private String email;
     private String password;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "doctor_specialization")
+    private DoctorSpecialization doctorSpecialization;
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "doctor_institution",
