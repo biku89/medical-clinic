@@ -34,7 +34,7 @@ jobs:
 
   docker:
     runs-on: ubuntu-latest
-    needs: build
+    needs: build     # 👈 docker job zależy od build
 
     steps:
       - name: Checkout code
@@ -64,6 +64,7 @@ jobs:
           file: ./Dockerfile
           tags: medical-clinic:ci
           push: false
+          load: true
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
 
