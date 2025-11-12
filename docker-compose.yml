@@ -34,3 +34,19 @@ services:
     environment:
       PGADMIN_DEFAULT_EMAIL: medical@gmail.com
       PGADMIN_DEFAULT_PASSWORD: password
+
+  patient-service:
+    build:
+      context: ./patient-service
+      dockerfile: Dockerfile
+    image: patient-service:latest
+    container_name: patient-service
+    depends_on:
+      - app
+    environment:
+      - SPRING_APPLICATION_NAME=patient-service
+      - SERVER_PORT=8080
+      - MEDICAL_CLINIC_URL=http://app:8080
+    ports:
+      - "8082:8080"
+

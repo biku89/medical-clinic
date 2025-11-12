@@ -83,4 +83,8 @@ public class DoctorController {
         return  institutionMapper.toDTO(doctorService.assignClinic(email, InstitutionAssign.getName()));
     }
 
+    @GetMapping("/specialization/{specialization}")
+    public List<DoctorDTO> getDoctorsBySpecialization(@PathVariable DoctorSpecialization specialization){
+        return doctorService.getDoctorsBySpecialization(specialization);
+    }
 }
