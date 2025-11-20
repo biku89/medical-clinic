@@ -13,6 +13,7 @@ import java.util.List;
 @Repository
 public interface VisitRepository extends JpaRepository<Visit, Long> {
     List<Visit> findByPatient(Patient patient);
+    List<Visit> findByDoctor(Doctor doctor);
 
     @Query("SELECT v FROM Visit v " +
             "WHERE v.doctor.id = :doctorId " +
@@ -23,9 +24,33 @@ public interface VisitRepository extends JpaRepository<Visit, Long> {
             @Param("start") LocalDateTime start,
             @Param("end") LocalDateTime end
     );
+
     List<Visit> findByDoctorIdAndEndDateTimeAfterAndStartDateTimeBefore(
             Long doctorId,
             LocalDateTime start,
             LocalDateTime end
     );
+
+    List<Visit> findByDoctorIdAndPatientIsNullAndStartDateTimeAfter(
+            Long doctorId, LocalDateTime from);
+
+    List<Visit> findByDoctor_DoctorSpecializationAndPatientIsNullAndStartDateTimeBetween(
+            DoctorSpecialization specialization,
+            LocalDateTime start,
+            LocalDateTime end
+    );
+
+    List<Visit> findByDoctorId(Long doctorId);
+
+    List<Visit> findByDoctor_DoctorSpecializationAndStartDateTimeBetween(
+            DoctorSpecialization specialization,
+            LocalDateTime from,
+            LocalDateTime to
+    );
+
+    List<Visit> findByPatientIsNullAndStartDateTimeBetween(
+            LocalDateTime from,
+            LocalDateTime to
+    );
+
 }

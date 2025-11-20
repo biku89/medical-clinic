@@ -3,7 +3,9 @@ package com.biku89.medical_clinic;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 
 @Service
@@ -60,4 +62,44 @@ public class VisitService {
                 .map(visitMapper::toDTO)
                 .toList();
     }
+
+    public List<VisitDTO> getAvailableVisitsForDoctor(Long doctorId){
+        Doctor doctor = doctorRepository.findById(doctorId)
+                .orElseThrow(() -> new DoctorNotFoundException("Doctor  not found"));
+        return visitRepository.findByDoctorIdAndPatientIsNullAndStartDateTimeAfter(doctorId, LocalDateTime.now())
+                .stream().map(visitMapper::toDTO).toList();
+    }
+
+    public List<VisitDTO> getAvailableVisitsBySpecializationAndDate(DoctorSpecialization doctorSpecialization, LocalDate date){
+        LocalDateTime start = date.atStartOfDay();
+        LocalDateTime end = date.atTime(LocalTime.MAX);
+        return visitRepository.findByDoctor_DoctorSpecializationAndPatientIsNullAndStartDateTimeBetween(doctorSpecialization,start,end)
+                .stream()
+                .map(visitMapper::toDTO)
+                .toList();
+    }
+
+    public List<VisitDTO> getAllVisitForDoctor(Long doctorId){
+        return visitRepository.findByDoctorId(doctorId)
+                .stream()
+                .map(visitMapper::toDTO)
+                .toList();
+    }
+
+    public void deleteVisit(Long visitId){
+        Visit visit = visitRepository.findById(visitId).orElseThrow(() -> new NotFoundException("Visit nit found"));
+        visitRepository.delete(visit);
+    }
+
+    public List<VisitDTO> getVisitsBySpecializationAndSpecificTimePeriod(DoctorSpecialization specialization, LocalDateTime from, LocalDateTime to){
+        return visitRepository.findByDoctor_DoctorSpecializationAndStartDateTimeBetween(specialization, from,to)
+                .stream().map(visitMapper::toDTO).toList();
+    }
+
+    public List<VisitDTO> getAllVisitsWithAndWithoutSpecializationForSpecificTimePeriod(LocalDateTime from, LocalDateTime to){
+        return visitRepository.findByPatientIsNullAndStartDateTimeBetween(from, to)
+                .stream().map(visitMapper::toDTO).toList();
+    }
+
+
 }
